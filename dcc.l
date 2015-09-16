@@ -1,10 +1,10 @@
 %{
-    #include "dcc.tab.h"
-    #define YY_DECL extern "C" int yylex()
-    int line_num = 0;
     #include <iostream>
     #include <cstdlib>
     #include <fstream>
+    #include "dcc.tab.h"
+    #define YY_DECL extern "C" int yylex()
+    int line_num = 0;
     extern std::fstream flex;
 %}
 
@@ -190,13 +190,13 @@ void {
 
 {UNDERSCOREDALPHA}({UNDERSCOREDALPHA}|{DIGIT})* {
     yylval.sval = strdup(yytext);
-    flex<<"ID: "<<yylval.sval<<"\n";
+    flex << "ID: " << yylval.sval << std::endl;
     return IDENTIFIER;
 }
 
 {DIGIT}+ {
     yylval.ival = atoi(yytext);
-    flex<<"INT: "<<yylval.ival<<"\n";
+    flex << "INT: " << yylval.ival << std::endl;
     return INT_VALUE;
 }
 
@@ -207,13 +207,13 @@ void {
 
 \"{CHAR}*\" {
     yylval.sval = strdup(yytext);
-    flex<<"STRING: "<<yylval.sval<<"\n";
+    flex << "STRING: " << yylval.sval << std::endl;
     return STRING_VALUE;
 }
 
 \'{CHAR}\' {
     yylval.cval = yytext[1];
-    flex<<"STRING: "<<yylval.cval<<"\n";
+    flex << "STRING: " << yylval.cval << std::endl;
     return CHAR_VALUE;
 }
 

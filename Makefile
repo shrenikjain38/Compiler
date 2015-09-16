@@ -1,5 +1,5 @@
 OBJ = dcc
-override CFLAGS += -O3 -flto -Wall 
+override CFLAGS += -O3 -flto -Wall -std=c++11
 PREFIX ?= /usr/local
 BINDIR = $(PREFIX)/bin
 CXX ?= g++

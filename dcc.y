@@ -1,12 +1,14 @@
 %{
     #include <iostream>
-
+    #include <fstream>
+    #include <cstring>
+    extern std::fstream bison;
     extern "C" int yylex();
     extern "C" int yyparse();
     extern "C" FILE * yyin;
     extern int line_num;
-
     void yyerror(const char *s);
+    
 %}
 
 %union {
@@ -25,13 +27,10 @@
 %token CLOSE_CURLYBRACE
 %token PLUSPLUS
 %token PLUSEQUAL
-%token PLUS
+%left PLUS MINUS
 %token MINUSMINUS
 %token MINUSEQUAL
-%token MINUS
-%token MULTIPLY
-%token DIVIDE
-%token MODULO
+%left MULTIPLY DIVIDE MODULO
 %token NOT
 %token NOTEQUAL
 %token LESSEQUAL
@@ -60,164 +59,125 @@
 %token <sval> STRING_VALUE
 %token <cval> CHAR_VALUE
 
+%type <sval> type
+%type <sval> identifier_array
+
 %%
 
-program : CLASS IDENTIFIER OPEN_CURLYBRACE field_decl_list method_decl_list CLOSE_CURLYBRACE 
-        | CLASS IDENTIFIER OPEN_CURLYBRACE field_decl_list CLOSE_CURLYBRACE  {}
-        | CLASS IDENTIFIER OPEN_CURLYBRACE method_decl_list CLOSE_CURLYBRACE {}
-        | CLASS IDENTIFIER OPEN_CURLYBRACE CLOSE_CURLYBRACE {}
+program : CLASS IDENTIFIER OPEN_CURLYBRACE field_decl_list statement_decl_list CLOSE_CURLYBRACE { bison <<"PROGRAM ENCOUNTERED" << std::endl; }
+        | CLASS IDENTIFIER OPEN_CURLYBRACE statement_decl_list CLOSE_CURLYBRACE { bison <<"PROGRAM ENCOUNTERED" << std::endl; }
+        | CLASS IDENTIFIER OPEN_CURLYBRACE field_decl_list CLOSE_CURLYBRACE { bison <<"PROGRAM ENCOUNTERED" << std::endl; }
+        | CLASS IDENTIFIER OPEN_CURLYBRACE CLOSE_CURLYBRACE { bison <<"PROGRAM ENCOUNTERED" << std::endl; }
         ;
 
-field_decl_list : field_decl {}
-                | field_decl_list field_decl {}
+field_decl_list : field_decl
+                | field_decl_list field_decl
                 ;
 
-field_decl : type identifier_list SEMICOLON {}
-           | type identifier_array_list SEMICOLON {}
+field_decl : type IDENTIFIER SEMICOLON { bison << $1 << " DECLARATION ENCOUNTERED. ID=" << $2 << std::endl; }
+           | type identifier_array SEMICOLON { bison << $1 << " DECLARATION ENCOUNTERED. ID=" << $2 << std::endl; }
            ;
 
-identifier_list : IDENTIFIER {}
-                | identifier_list COMMA IDENTIFIER {}
-                ;
+type : INT {{ $$ = strdup("INT"); }}
+     | BOOLEAN {{ $$ = strdup("BOOLEAN"); }}
+     ;
 
-
-identifier_array_list : identifier_array {}
-                      | identifier_array_list COMMA identifier_array {}
-                      ;
-
-identifier_array : IDENTIFIER OPEN_SQUAREBRACKET INT_VALUE CLOSE_SQUAREBRACKET {}
+identifier_array : IDENTIFIER OPEN_SQUAREBRACKET INT_VALUE CLOSE_SQUAREBRACKET 
+                   { 
+                       char * scratch = (char *) malloc(sizeof(char) * (1 + strlen($1) + sizeof(" SIZE=") + 10));
+                       char convertion_buffer[10];
+                       sprintf(convertion_buffer, "%d", $3);
+                       strcpy(scratch, $1);
+                       strcat(scratch, " SIZE=");
+                       strcat(scratch, convertion_buffer);
+                       $$ = scratch;
+                   }
                  ;
 
-method_decl_list : method_decl {}
-                 | method_decl_list method_decl {}
-                 ;
+statement_decl_list : statement_decl
+                    | statement_decl_list statement_decl
+                    ; 
 
-method_decl : type IDENTIFIER OPEN_PARANTHESIS type_identifier_list CLOSE_PARANTHESIS block {}
-            | VOID IDENTIFIER OPEN_PARANTHESIS type_identifier_list CLOSE_PARANTHESIS block {}
-            ;
-
-type_identifier_list : {}
-                     | type_identifier {}
-                     | type_identifier_list COMMA type_identifier {}
-                     ;
-
-type_identifier : type IDENTIFIER {}
-                ;
-
-block : OPEN_CURLYBRACE var_decl_list statement_list CLOSE_CURLYBRACE {}
-      ;
-
-statement_list : {} 
-			   | statement {}
-               | statement_list statement {}
+statement_decl : location assign_op expr SEMICOLON { bison << "ASSIGNMENT OPERATION ENCOUNTERED" << std::endl; }
+               | CALLOUT OPEN_PARANTHESIS STRING_VALUE COMMA callout_arg_list CLOSE_PARANTHESIS SEMICOLON { bison << "CALLOUT TO " << $3 << " ENCOUNTERED" << std::endl; }
+               | CALLOUT OPEN_PARANTHESIS STRING_VALUE CLOSE_PARANTHESIS SEMICOLON { bison << "CALLOUT TO " << $3 << " ENCOUNTERED" << std::endl; }
                ;
 
-var_decl_list : {}
-              | var_decl_list var_decl {}
-              ;
-
-var_decl : type identifier_list SEMICOLON
+location : IDENTIFIER { bison << "LOCATION ENCOUNTERED=" << $1 << std::endl; }
+         | IDENTIFIER OPEN_SQUAREBRACKET expr CLOSE_SQUAREBRACKET { bison << "LOCATION ENCOUNTERED=" << $1 << std::endl; }
          ;
 
-type : INT {}
-     | BOOLEAN {}
+assign_op : EQUAL 
+          | PLUSEQUAL 
+          | MINUSEQUAL 
+          ;
+
+expr : location
+     | method_call
+     | literal
+     | expr PLUS expr { bison << "ADDITION ENCOUNTERED" << std::endl; }
+     | expr MINUS expr { bison << "SUBTRACTION ENCOUNTERED" << std::endl; }
+     | expr MULTIPLY expr { bison << "MULTIPLICATION ENCOUNTERED" << std::endl; }
+     | expr DIVIDE expr { bison << "DIVISION ENCOUNTERED" << std::endl; }
+     | expr MODULO expr { bison << "MOD ENCOUNTERED" << std::endl; }
+     | expr rel_op expr
+     | expr eq_op expr
+     | expr cond_op expr
+     | MINUS expr
+     | NOT expr
+     | OPEN_PARANTHESIS expr CLOSE_PARANTHESIS
      ;
 
-statement : SEMICOLON {}
-          | location assign_op expr SEMICOLON {}
-          | method_call SEMICOLON {}
-          | IF OPEN_PARANTHESIS expr CLOSE_PARANTHESIS block ELSE block {}
-          | IF OPEN_PARANTHESIS expr CLOSE_PARANTHESIS block {}
-          | FOR IDENTIFIER EQUAL expr COMMA expr block {}
-          | RETURN expr SEMICOLON {}
-          | RETURN SEMICOLON {}
-          | BREAK SEMICOLON {}
-          | CONTINUE SEMICOLON {}
-          | block {}
-          ;
-
-assign_op : EQUAL {}
-          | PLUSEQUAL {}
-          | MINUSEQUAL {}
-          ;
-
-method_call : method_name OPEN_PARANTHESIS expr_list CLOSE_PARANTHESIS {}
-            | CALLOUT OPEN_PARANTHESIS STRING_VALUE COMMA callout_arg_list CLOSE_PARANTHESIS {}
-            | CALLOUT OPEN_PARANTHESIS STRING_VALUE CLOSE_PARANTHESIS {}
+method_call : method_name OPEN_PARANTHESIS expr_list CLOSE_PARANTHESIS
+            | CALLOUT OPEN_PARANTHESIS STRING_VALUE COMMA callout_arg_list CLOSE_PARANTHESIS
+            | CALLOUT OPEN_PARANTHESIS STRING_VALUE CLOSE_PARANTHESIS
             ;
-  
-expr_list : {}
-          | expr {}
-          | expr_list COMMA expr {}
+
+method_name : IDENTIFIER
+            ;
+
+expr_list : %empty
+          | expr
+          | expr_list COMMA expr
           ;
 
-callout_arg_list : callout_arg {}
-                 | callout_arg_list COMMA callout_arg {}
+callout_arg_list : callout_arg
+                 | callout_arg_list COMMA callout_arg
                  ;
 
-method_name : IDENTIFIER {}
+callout_arg : expr 
+            | STRING_VALUE
             ;
 
-location : IDENTIFIER {}
-         | IDENTIFIER OPEN_SQUAREBRACKET expr CLOSE_SQUAREBRACKET {}
-         ;
+literal : int_literal
+        | char_literal
+        | bool_literal
+        ;
 
-expr : location {}
-     | method_call {}
-     | literal {}
-     | expr bin_op expr {}
-     | MINUS expr {}
-     | NOT expr {}
-     | OPEN_PARANTHESIS expr CLOSE_PARANTHESIS {}
-     ;
-
-callout_arg : expr  {}
-            | STRING_VALUE {}
-  
+int_literal : INT_VALUE { bison << "INT ENCOUNTERED=" << $1 << std::endl; }
             ;
 
-bin_op : arith_op {}
-       | rel_op {}
-       | eq_op {}
-       | cond_op {}
+char_literal : CHAR_VALUE { bison << "CHAR ENCOUNTERED=" << $1 << std::endl; }
+             ;
+
+bool_literal : TRUE { bison << "BOOLEAN ENCOUNTERED=true" << std::endl; }
+             | FALSE { bison << "INT ENCOUNTERED=false" << std::endl; }
+             ;
+
+rel_op : LESSTHAN
+       | GREATERTHAN
+       | LESSEQUAL
+       | GREATEREQUAL
        ;
 
-arith_op : PLUS {}
-         | MINUS {}
-         | MULTIPLY {}
-         | DIVIDE {}
-         | MODULO {}
-         ;
-
-rel_op : LESSTHAN {}
-       | GREATERTHAN {}
-       | LESSEQUAL {}
-       | GREATEREQUAL {}
-       ;
-
-eq_op : EQUALEQUAL {}
-      | NOTEQUAL {}
+eq_op : EQUALEQUAL
+      | NOTEQUAL
       ;
 
-cond_op : AND {}
-        | OR {}
+cond_op : AND
+        | OR
         ;
-
-literal : int_literal {}
-        | char_literal {}
-        | bool_literal {}
-        ;
-
-int_literal : INT_VALUE  {}
-            ;
-
-char_literal : CHAR_VALUE {}
-             ;
-
-bool_literal : TRUE {}
-             | FALSE {}
-             ;
-
+  
 %%
 
 

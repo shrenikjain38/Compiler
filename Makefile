@@ -1,3 +1,4 @@
+EXEC = syntax_analyser
 OBJ = dcc
 override CFLAGS += -O3 -flto -Wall 
 PREFIX ?= /usr/local
@@ -6,7 +7,7 @@ CXX ?= g++
 LEX = flex 
 YACC = bison -d
 
-$(OBJ) : $(OBJ).tab.o lex.yy.o main.o
+$(EXEC) : $(OBJ).tab.o lex.yy.o main.o
 	$(CXX) $^ -o $@ $(CFLAGS)
 
 %.o : %.c 
@@ -22,7 +23,7 @@ lex.yy.c : $(OBJ).l $(OBJ).tab.c
 	$(LEX) $(OBJ).l
 
 clean :
-	rm -f $(OBJ) lex.yy.c ${OBJ}.tab.c ${OBJ}.tab.h ${OBJ}.tab.o lex.yy.o main.o
+	rm -f $(EXEC) lex.yy.c ${OBJ}.tab.c ${OBJ}.tab.h ${OBJ}.tab.o lex.yy.o main.o
 
 all : ${OBJ}
 

@@ -182,7 +182,7 @@ cond_op : AND
 
 
 void yyerror (const char *s) {
-    std::cerr << "Parse error on line " << line_num << " ! Message : " << s << std::endl;
+    std::cout << "Syntax Error"<< std::endl;
     exit(-1);
 }
 

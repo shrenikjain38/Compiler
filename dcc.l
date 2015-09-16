@@ -225,7 +225,7 @@ void {
 }
 
 . {
-    std::cerr << "UNKNOWN SOMETHING HAS HAPPENED" << yytext;
+    std::cout << "Syntax Error" << yytext;
 }
 
 %%

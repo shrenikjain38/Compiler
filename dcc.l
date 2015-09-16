@@ -4,6 +4,8 @@
     int line_num = 0;
     #include <iostream>
     #include <cstdlib>
+    #include <fstream>
+    extern std::fstream flex;
 %}
 
 %option noyywrap
@@ -129,6 +131,7 @@ CHAR ([\40-\176]{-}['"\\])|\\n|\\t|\\\\|\\\"|\\\'
 }
 
 boolean {
+    flex<<"BOOLEAN_DECLARATION\n";
     return BOOLEAN;
 }
 
@@ -137,10 +140,12 @@ break {
 }
 
 callout {
+    flex<<"CALLOUT\n";
     return CALLOUT;
 }
 
 class {
+    flex<<"CLASS\n";
     return CLASS;
 }
 
@@ -153,6 +158,7 @@ else {
 }
 
 false {
+    flex<<"BOOLEAN: false\n";
     return FALSE;
 }
 
@@ -165,6 +171,7 @@ if {
 }
 
 int {
+    flex<<"INT_DECLARATION\n";
     return INT;
 }
 
@@ -173,6 +180,7 @@ return {
 }
 
 true {
+    flex<<"BOOLEAN: true\n";
     return TRUE;
 }
 
@@ -182,11 +190,13 @@ void {
 
 {UNDERSCOREDALPHA}({UNDERSCOREDALPHA}|{DIGIT})* {
     yylval.sval = strdup(yytext);
+    flex<<"ID: "<<yylval.sval<<"\n";
     return IDENTIFIER;
 }
 
 {DIGIT}+ {
     yylval.ival = atoi(yytext);
+    flex<<"INT: "<<yylval.ival<<"\n";
     return INT_VALUE;
 }
 
@@ -197,11 +207,13 @@ void {
 
 \"{CHAR}*\" {
     yylval.sval = strdup(yytext);
+    flex<<"STRING: "<<yylval.sval<<"\n";
     return STRING_VALUE;
 }
 
 \'{CHAR}\' {
     yylval.cval = yytext[1];
+    flex<<"STRING: "<<yylval.cval<<"\n";
     return CHAR_VALUE;
 }
 

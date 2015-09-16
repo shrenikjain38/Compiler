@@ -136,7 +136,7 @@ method_call : method_name OPEN_PARANTHESIS expr_list CLOSE_PARANTHESIS
 method_name : IDENTIFIER
             ;
 
-expr_list : %empty
+expr_list :
           | expr
           | expr_list COMMA expr
           ;

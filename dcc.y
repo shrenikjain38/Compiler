@@ -128,12 +128,9 @@ expr : location
      | OPEN_PARANTHESIS expr CLOSE_PARANTHESIS
      ;
 
-method_call : method_name OPEN_PARANTHESIS expr_list CLOSE_PARANTHESIS
+method_call : IDENTIFIER OPEN_PARANTHESIS expr_list CLOSE_PARANTHESIS
             | CALLOUT OPEN_PARANTHESIS STRING_VALUE COMMA callout_arg_list CLOSE_PARANTHESIS
             | CALLOUT OPEN_PARANTHESIS STRING_VALUE CLOSE_PARANTHESIS
-            ;
-
-method_name : IDENTIFIER
             ;
 
 expr_list :

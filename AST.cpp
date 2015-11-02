@@ -1,525 +1,135 @@
-#include <bits/stdc++.h>
+#include "AST.h"
 
-class ast_node
-{
+enum class BinOp : char {
+	plus_op,
+	minus_op,
+	multiply_op,
+	divide_op,
+	modulo_op,
+	lessthan_op,
+	greaterthan_op,
+	lessthanequal_op,
+	greaterthanequal_op,
+	notequal_op,
+	and_op,
+	or_op
 };
 
-class program
-{
-
-
+enum class Datatype : char {
+	int_type,
+	void_type,
+	bool_type
 };
 
-class operator_node
-{
-
-
-};
-
-class field_decl_list
-{
-
-};
-
-class field_decl
-{
-
-};
-
-class type
-{
-
-};
-
-class identifier_array
-{
-
-};
-
-class statement_decl_list
-{
-
-};
-
-class statement_decl
-{
-
-};
-
-
-
-class assign_op
-{
-
-};
-
-class method_call
-{
-
-};
-
-class method_name
-{
-
-};
-
-class expr_list
-{
-
-};
-
-class callout_arg_list
-{
-
-};
-
-class callout_arg
-{
-
-};
-
-class literal
-{
-
-};
-
-class int_literal
-{
-
-};
-
-class char_literal
-{
-
-};
-
-class bool_literal
-{
-
-};
-
-
-
-// For All expressions 
-
-class expr:public ast_node
-{
-protected:
-	int num;
+class ASTNode {
 public:
-	virtual int evaluate()=0;
-
+	ASTNode();
+	~ASTNode();
+	void accept() {
+	}
 };
 
-class location:public expr
+class ASTProgram : public ASTNode
 {
-protected:
-	int loc;
+	std::string id;
+	std::vector<ASTMethodDecl *> mdl;
+	std::vector<ASTFieldDecl *> fdl;
 public:
-	location(int locs)
-	{
-		loc = locs;
+	ASTProgram(std::string id, std::vector<ASTMethodDecl *> mdl, std::vector<ASTFieldDecl *> fdl){
+		this->id = id;
+		this->mdl = mdl;
+		this->fdl = fdl;
 	}
-
-	int evaluate()
-
-	{
-		return loc;
+	std::string getId(){
+		return this->id;
 	}
-	
-
+	std::vector<ASTMethodDecl *> getMdl() {
+		return this->mdl;
+	}
+	std::vector<ASTFieldDecl *> getFdl() {
+		return this->fdl;
+	}
+	~ASTProgram();
 };
 
-class unary_minus:public expr
-{
-protected:
-	expr *expression;
-public:
-	unary_minus(expr* express)
-	{
-		expression = express;
-	}
-	int evaluate()
-	{
-		int num;
-		num = expression->evaluate();
-		return (-num);
-	}
-
-};
-
-class unary_not:public expr
-{
-protected:
-	expr *expression;
-public:
-	unary_not(expr* express)
-	{
-		expression = express;
-	}
-	int evaluate()
-	{
-		int num;
-		num = expression->evaluate();
-		return (!num);
-	}
-
-};
-
-class plus:public expr
-{
-protected:
-	expr *left;
-	expr *right;
-public:
-	plus(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num + right_num;
-		return num;
-	}
-
-};
-
-class minus:public expr
-{
-protected:
-	expr *left;
-	expr *right;
-public:
-	minus(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num - right_num;
-		return num;
-	}
-
-};
-
-class multiply:public expr
-{
-protected:
-	expr *left;
-	expr *right;
-public:
-	multiply(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num * right_num;
-		return num;
-	}
-
-};
-
-class divide:public expr
-{
-protected:
-	expr *left;
-	expr *right;
-public:
-	divide(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num / right_num;
-		return num;
-	}
-
-};
-
-class modulo:public expr
-{
-protected:
-	expr *left;
-	expr *right;
-public:
-	modulo(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num % right_num;
-		return num;
-	}
-
-};
-
-class rel_op : public expr
-{
-protected:
-	expr *left;
-	expr *right;
-public:
-	rel_op()
-	{
-		left = NULL;
-		right = NULL;
-	}
-};
-
-class less_than : public rel_op
+class ASTStatement : public ASTNode
 {
 public:
-	less_than(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num < right_num;
-		return num;
-	}
-
-
+	ASTStatement();
+	~ASTStatement();
 };
 
-class less_equal : public rel_op
-{
-	public:
-	less_equal(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num <= right_num;
-		return num;
-	}
-
-
-};
-
-class greater_than : public rel_op
-{
-	public:
-	greater_than(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num < right_num;
-		return num;
-	}
-};
-
-class greater_equal : public rel_op
+class ASTExpression : public ASTNode
 {
 public:
-	greater_equal(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num < right_num;
-		return num;
-	}
+	ASTExpression();
+	~ASTExpression();
 };
 
-class eq_op : public expr
+class ASTFieldDecl
 {
-protected:
-	expr *left;
-	expr *right;
+	std::vector<std::string> id;
+	Datatype type;
 public:
-	eq_op() 
-	{
-		left = NULL;
-		right = NULL;
+	ASTFieldDecl(std::vector<std::string> id, Datatype type){
+		this->id = id;
+		this->type = type;
 	}
-};
-
-class equal_equal : public eq_op
-{
-public:
-	equal_equal(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}	
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num == right_num;
+	std::vector<std::string> getId() {
+		return this->id;
 	}
-};
-
-class not_equal : public eq_op
-{
-public:
-	not_equal(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}	
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num != right_num;
+	Datatype getType() {
+		return this->type;
 	}
+	~ASTFieldDecl();
 };
 
-
-class cond_op : public expr
+class ASTMethodDecl
 {
-protected:
-	expr *left;
-	expr *right;
+	std::string id;
+	Datatype returnType;
+	std::vector<ASTVarDecl
 public:
-	cond_op()
-	{
-		left = NULL;
-		right = NULL;
-	}	
+	ASTMethodDecl(arguments);
+	~ASTMethodDecl();
+
+	/* data */
 };
 
-class and_op:public cond_op
+class ASTLocation : public ASTNode
 {
+	std::string id;
+	ASTExpression *expr;  
 public:
-	and_op(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}	
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num && right_num;
-
+	ASTLocation(std::string id, ASTExpression *expr) {
+		this->id = id;
+		this->expr = expr;
 	}
-
-};
-
-class or_op:public cond_op
-{
-public:
-	or_op(expr *l, expr *r)
-	{
-		left = l;
-		right = r;
-	}	
-
-	int evaluate()
-	{
-		int left_num,right_num;
-		left_num = left->evaluate();
-		right_num = right->evaluate();
-		num = left_num || right_num;
-		return num;
+	std::string getId() {
+		return this->id;
 	}
-};
-
-
-class int_value : public int_literal
-{
-protected:
-	int num;
-public:
-	 int_value(int value)
-	{
-		num = value;
+	ASTExpression *getExpr() {
+		return this->expr;
 	}
+	~ASTLocation();
 };
 
-class char_value : public char_literal
+class ASTBlockStatement : ASTStatement
 {
-protected:
-	char character;
+	std::vector<ASTStatement *> stmtlist;
 public:
-	 char_value(char value)
-	{
-		character = value;
+	ASTBlockStatement(std::vector<ASTStatement *> stmtlist) {
+		this->stmtlist = stmtlist;
 	}
-
+	std::vector<ASTStatement *> getStmtlist() {
+		return this->stmtlist;
+	}
+	~ASTBlockStatement();
 };
 
-class bool_true : public bool_literal
-{
-protected:
-	int value;
-public:
-	 bool_true()
-	{
-		value = true;
-	}
-
-};
-
-class bool_false : public bool_literal
-{
-protected:
-	int value;
-public:
-	 bool_false()
-	{
-		value = false;
-	}
-
-};
+// class ASTAssignmentStatement : public ASTStatement
+// {
+// public:
+// 	ASTAssignmentStatement();
+// 	~ASTAssignmentStatement();
+// };

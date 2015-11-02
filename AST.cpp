@@ -1,3 +1,9 @@
+#include <bits/stdc++.h>
+
+class ast_node
+{
+};
+
 class program
 {
 
@@ -92,6 +98,8 @@ class bool_literal
 
 };
 
+
+
 // For All expressions 
 
 class expr:public ast_node
@@ -108,12 +116,13 @@ class location:public expr
 protected:
 	int loc;
 public:
-	location::location(int locs)
+	location(int locs)
 	{
 		loc = locs;
 	}
 
-	int location::evaluate()
+	int evaluate()
+
 	{
 		return loc;
 	}
@@ -126,11 +135,11 @@ class unary_minus:public expr
 protected:
 	expr *expression;
 public:
-	unary_minus::unary_minus(expr* express)
+	unary_minus(expr* express)
 	{
 		expression = express;
 	}
-	int unary_minus::evaluate()
+	int evaluate()
 	{
 		int num;
 		num = expression->evaluate();
@@ -144,11 +153,11 @@ class unary_not:public expr
 protected:
 	expr *expression;
 public:
-	unary_not::unary_not(expr* express)
+	unary_not(expr* express)
 	{
 		expression = express;
 	}
-	int unary_not::evaluate()
+	int evaluate()
 	{
 		int num;
 		num = expression->evaluate();
@@ -163,18 +172,18 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	plus::plus(expr *l, expr *r)
+	plus(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}
 
-	int plus::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
 		right_num = right->evaluate();
-		num = left + right;
+		num = left_num + right_num;
 		return num;
 	}
 
@@ -186,18 +195,18 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	plus::minus(expr *l, expr *r)
+	minus(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}
 
-	int minus::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
 		right_num = right->evaluate();
-		num = left - right;
+		num = left_num - right_num;
 		return num;
 	}
 
@@ -209,18 +218,18 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	multiply::multiply(expr *l, expr *r)
+	multiply(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}
 
-	int multiply::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
 		right_num = right->evaluate();
-		num = left * right;
+		num = left_num * right_num;
 		return num;
 	}
 
@@ -232,18 +241,18 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	divide::divide(expr *l, expr *r)
+	divide(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}
 
-	int divide::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
 		right_num = right->evaluate();
-		num = left / right;
+		num = left_num / right_num;
 		return num;
 	}
 
@@ -255,18 +264,18 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	modulo::modulo(expr *l, expr *r)
+	modulo(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}
 
-	int modulo::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
 		right_num = right->evaluate();
-		num = left % right;
+		num = left_num % right_num;
 		return num;
 	}
 
@@ -278,25 +287,27 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	rel_op :: rel_op(expr *l, expr *r)
+	rel_op()
+	{
+		left = NULL;
+		right = NULL;
+	}
+};
+
+class less_than : public rel_op
+{
+public:
+	less_than(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
-	}	
+	}
 
-};
-
-class less_than :: public rel_op
-{
-public:
-	less_than::less_than()
-	{}
-
-	int less_than::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
-		right_num = right_num->evaluate();
+		right_num = right->evaluate();
 		num = left_num < right_num;
 		return num;
 	}
@@ -304,17 +315,20 @@ public:
 
 };
 
-class less_equal :: public rel_op
+class less_equal : public rel_op
 {
 	public:
-	less_equal::less_equal()
-	{}
+	less_equal(expr *l, expr *r)
+	{
+		left = l;
+		right = r;
+	}
 
-	int less_equal::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
-		right_num = right_num->evaluate();
+		right_num = right->evaluate();
 		num = left_num <= right_num;
 		return num;
 	}
@@ -322,33 +336,39 @@ class less_equal :: public rel_op
 
 };
 
-class greater_than :: public rel_op
+class greater_than : public rel_op
 {
 	public:
-	greater_than::greater_than()
-	{}
+	greater_than(expr *l, expr *r)
+	{
+		left = l;
+		right = r;
+	}
 
-	int greater_than::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
-		right_num = right_num->evaluate();
+		right_num = right->evaluate();
 		num = left_num < right_num;
 		return num;
 	}
 };
 
-class greater_equal :: public rel_op
+class greater_equal : public rel_op
 {
 public:
-	greater_equal::greater_equal()
-	{}
+	greater_equal(expr *l, expr *r)
+	{
+		left = l;
+		right = r;
+	}
 
-	int greater_equal::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
-		right_num = right_num->evaluate();
+		right_num = right->evaluate();
 		num = left_num < right_num;
 		return num;
 	}
@@ -360,20 +380,23 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	eq_op::eq_op(expr *l, expr *r)
+	eq_op() 
+	{
+		left = NULL;
+		right = NULL;
+	}
+};
+
+class equal_equal : public eq_op
+{
+public:
+	equal_equal(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}	
-};
 
-class equal_equal : public expr
-{
-public:
-	equal_equal::equal_equal()
-	{}
-
-	int equal_equal::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
@@ -382,13 +405,16 @@ public:
 	}
 };
 
-class not_equal : public expr
+class not_equal : public eq_op
 {
 public:
-	not_equal::not_equal()
-	{}
+	not_equal(expr *l, expr *r)
+	{
+		left = l;
+		right = r;
+	}	
 
-	int not_equal::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
@@ -404,21 +430,23 @@ protected:
 	expr *left;
 	expr *right;
 public:
-	cond_op :: cond_op(expr *l, expr *r)
+	cond_op()
+	{
+		left = NULL;
+		right = NULL;
+	}	
+};
+
+class and_op:public cond_op
+{
+public:
+	and_op(expr *l, expr *r)
 	{
 		left = l;
 		right = r;
 	}	
 
-};
-
-class and:public cond_op
-{
-public:
-	and::and()
-	{}
-
-	and::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
@@ -429,21 +457,23 @@ public:
 
 };
 
-class or:public cond_op
+class or_op:public cond_op
 {
 public:
-	or::or()
-	{}
+	or_op(expr *l, expr *r)
+	{
+		left = l;
+		right = r;
+	}	
 
-	or::evaluate()
+	int evaluate()
 	{
 		int left_num,right_num;
 		left_num = left->evaluate();
 		right_num = right->evaluate();
 		num = left_num || right_num;
-
+		return num;
 	}
-
 };
 
 
@@ -452,7 +482,7 @@ class int_value : public int_literal
 protected:
 	int num;
 public:
-	int_value :: int_value(int value)
+	 int_value(int value)
 	{
 		num = value;
 	}
@@ -463,7 +493,7 @@ class char_value : public char_literal
 protected:
 	char character;
 public:
-	char_value :: char_value(char value)
+	 char_value(char value)
 	{
 		character = value;
 	}
@@ -475,7 +505,7 @@ class bool_true : public bool_literal
 protected:
 	int value;
 public:
-	bool_true :: bool_true()
+	 bool_true()
 	{
 		value = true;
 	}
@@ -487,7 +517,7 @@ class bool_false : public bool_literal
 protected:
 	int value;
 public:
-	bool_false :: bool_false()
+	 bool_false()
 	{
 		value = false;
 	}

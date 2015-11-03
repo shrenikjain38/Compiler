@@ -5,7 +5,7 @@ PREFIX ?= /usr/local
 BINDIR = $(PREFIX)/bin
 CXX ?= g++
 LEX = flex 
-YACC = bison -d
+YACC = bison -d -rall -Wall
 
 $(EXEC) : $(OBJ).tab.o lex.yy.o main.o
 	$(CXX) $^ -o $@ $(CFLAGS)

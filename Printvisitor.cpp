@@ -5,10 +5,10 @@ class PrintVisitor : public Visitor
 public:
 	void visit(ASTProgram* a) {
 		std::cout<<"<program>"<<std::endl;
-		std::cout<<"<field_declarations count =\" "<<(a->getFdl())->size()<<">"<<std::endl;
-	// 	for(vector<int>::iterator it = myvector.begin() ; it < myvector.end(); it++) {
-	// 		std::cout<<*iterator<<std::endl;
-	// 	}
+		std::cout<<"<field_declarations count =\" "<<(a->getFdl()).size()<<">"<<std::endl;
+		for(auto &it = (a->getFdl()).begin() ; it != (a->getFdl()).end(); it++) {
+			it.accept(this);
+		}
 	// 	std::cout<<"</field_declarations"<<std::endl;
 
 	}

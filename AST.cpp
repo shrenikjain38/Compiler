@@ -27,6 +27,11 @@ enum class AssignOp : char {
 	equal
 };
 
+enum class UnOp : char {
+	minus_op,
+	not_op
+};
+
 class ASTNode {
 public:
 	ASTNode();
@@ -344,7 +349,38 @@ public:
 
 class ASTReturnStatement : public ASTStatement
 {
+	ASTExpression * return_expr;
+public:
+	ASTReturnStatement(ASTExpression * return_expr) {
+		this->return_expr = return_expr
+	}
+	ASTExpression * getReturn_expr() {
+		return this->return_expr;
+	}
+	~ASTReturnStatement();
+	void accept() {
 
+	}
+};
+
+class ASTContinueStatement : public ASTStatement
+{
+public:
+	ASTContinueStatement();
+	~ASTContinueStatement();
+	void accept() {
+
+	}
+};
+
+class ASTBreakStatement : public ASTStatement
+{
+public:
+	ASTBreakStatement();
+	~ASTBreakStatement();
+	void accept() {
+		
+	}
 };
 
 class ASTLocation : public ASTNode
@@ -392,9 +428,111 @@ public:
 	}
 };
 
-// class ASTAssignmentStatement : public ASTStatement
-// {
-// public:
-// 	ASTAssignmentStatement();
-// 	~ASTAssignmentStatement();
-// };
+class ASTLiteralExpression : public ASTExpression
+{
+public:
+	ASTLiteralExpression();
+	~ASTLiteralExpression();
+	virtual void accept() = 0;
+};
+
+class ASTIntegerLiteralExpression : public ASTLiteralExpression
+{
+	int value;
+public:
+	ASTIntegerLiteralExpression(int value) {
+		this->value = value;
+	}
+	int getValue() {
+		return this->value;
+	}
+	~ASTIntegerLiteralExpression();
+	void accept() {
+
+	}
+};
+
+class ASTCharLiteralExpression : public ASTLiteralExpression
+{
+	char value;
+public:
+	ASTCharLiteralExpression(char value) {
+		this->value = value;
+	}
+	char getValue() {
+		return this->value;
+	}
+	~ASTCharLiteralExpression();
+	void accept() {
+
+	}
+};
+
+class ASTTrueLiteralExpression : public ASTLiteralExpression
+{
+public:
+	ASTTrueLiteralExpression();
+	bool getValue() {
+		return true;
+	}
+	~ASTTrueLiteralExpression();
+	void accept() {
+
+	}
+};
+
+class ASTFalseLiteralExpression : public ASTLiteralExpression
+{
+public:
+	ASTFalseLiteralExpression();
+	bool getValue() {
+		return false;
+	}
+	~ASTFalseLiteralExpression();
+	void accept() {
+
+	}
+};
+
+class ASTBinaryOperationExpression : public ASTExpression
+{
+	ASTExpression * left;
+	ASTExpression * right;
+	BinOp op;
+public:
+	ASTBinaryOperationExpression(ASTExpression * left, ASTExpression * right, BinOp op) {
+		this->left = left;
+		this->right = right;
+		this->op = op;
+	}
+	ASTExpression * getLeft() {
+		return this->left;
+	}
+	ASTExpression * getRight() {
+		return this->right;
+	}
+	BinOp getOp() {
+		return this->op;
+	}
+	~ASTBinaryOperationExpression();
+	void accept() {
+
+	}
+};
+
+class ASTUnaryOperationExpression : public ASTExpression
+{
+	ASTExpression * expr;
+	UnOp op;
+	ASTUnaryOperationExpression(ASTExpression * expr, UnOp op) {
+		this->expr = expr;
+		this->op = op;
+	}
+	ASTExpression * getExpr() {
+		return this->expr;
+	}
+	UnOp getOp () {
+		return this->op;
+	}
+	~ASTUnaryOperationExpression();
+};

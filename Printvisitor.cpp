@@ -1,3 +1,7 @@
+#ifndef _PrintVisitor_CPP
+#define _PrintVisitor_CPP
+
+#include "AST.h"
 #include "Visitor.h"
 
 class PrintVisitor : public Visitor
@@ -6,10 +10,10 @@ public:
 	void visit(ASTProgram* a) {
 		std::cout<<"<program>"<<std::endl;
 		std::cout<<"<field_declarations count =\" "<<(a->getFdl()).size()<<">"<<std::endl;
-		for(auto &it = (a->getFdl()).begin() ; it != (a->getFdl()).end(); it++) {
-			it.accept(this);
+		for(auto it = (a->getFdl()).begin() ; it != (a->getFdl()).end(); it++) {
+			(*it)->accept(this);
 		}
-	// 	std::cout<<"</field_declarations"<<std::endl;
+		std::cout<<"</field_declarations>"<<std::endl;
 
 	}
 	void visit(ASTFieldDecl*) {
@@ -97,3 +101,5 @@ public:
 		std::cout<<"";
 	}
 };
+
+#endif

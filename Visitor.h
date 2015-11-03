@@ -1,4 +1,36 @@
-#include "AST.h"
+#ifndef _Visitor_H
+#define _Visitor_H
+
+class ASTNode;
+class ASTProgram;
+class ASTFieldDecl;
+class ASTIdentifier;
+class ASTVarIdentifier;
+class ASTArrayIdentifier;
+class ASTMethodDecl;
+class ASTTypeIdentifier;
+class ASTStatement;
+class ASTExpression;
+class ASTBlockStatement;
+class ASTAssignmentStatement;
+class ASTMethodCall;
+class ASTNormalMethod;
+class ASTCalloutMethod;
+class ASTIfStatement;
+class ASTForStatement;
+class ASTReturnStatement;
+class ASTContinueStatement;
+class ASTBreakStatement;
+class ASTLocation;
+class ASTVarLocation;
+class ASTArrayLocation;
+class ASTLiteralExpression;
+class ASTIntegerLiteralExpression;
+class ASTCharLiteralExpression;
+class ASTTrueLiteralExpression;
+class ASTFalseLiteralExpression;
+class ASTBinaryOperationExpression;
+class ASTUnaryOperationExpression;
 
 class Visitor
 {
@@ -34,4 +66,4 @@ public:
 	virtual void visit(ASTUnaryOperationExpression*) = 0;
 };
 
-
+#endif

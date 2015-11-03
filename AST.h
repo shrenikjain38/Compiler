@@ -1,4 +1,7 @@
+#ifndef _AST_H
+#define _AST_H
 #include <bits/stdc++.h>
+#include "Visitor.h"
 
 class ASTNode;
 class ASTProgram;
@@ -567,6 +570,8 @@ class ASTUnaryOperationExpression : public ASTExpression
 	}
 	~ASTUnaryOperationExpression();
 	void accept(Visitor *v) {
-		v->accept(this);
+		v->visit(this);
 	}
 };
+#endif
+

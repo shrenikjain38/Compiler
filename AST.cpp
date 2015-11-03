@@ -60,8 +60,8 @@ public:
 		return this->fdl;
 	}
 	~ASTProgram();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -81,8 +81,8 @@ public:
 		return this->type;
 	}
 	~ASTFieldDecl();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -105,8 +105,8 @@ public:
 		return this->id;
 	}
 	~ASTVarIdentifier();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -126,8 +126,8 @@ public:
 		return this->size;
 	}
 	~ASTArrayIdentifier();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -157,8 +157,8 @@ public:
 		return this->block;
 	}
 	~ASTMethodDecl();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -172,8 +172,8 @@ public:
 		this->type = type;
 	}
 	~ASTTypeIdentifier();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -205,8 +205,8 @@ public:
 		return this->stmtlist;
 	}
 	~ASTBlockStatement();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -231,8 +231,8 @@ public:
 		return this->expr;
 	}
 	~ASTAssignmentStatement();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -265,8 +265,8 @@ public:
 		return this->block;
 	}
 	~ASTNormalMethod();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -290,8 +290,8 @@ class ASTCalloutMethod : public ASTMethodCall
 		return this->block;
 	}
 	~ASTCalloutMethod();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -316,8 +316,8 @@ public:
 		return this->else_block;
 	}
 	~ASTIfStatement();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -342,8 +342,8 @@ public:
 		return this->block;
 	}
 	~ASTForStatement();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -358,8 +358,8 @@ public:
 		return this->return_expr;
 	}
 	~ASTReturnStatement();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -368,8 +368,8 @@ class ASTContinueStatement : public ASTStatement
 public:
 	ASTContinueStatement();
 	~ASTContinueStatement();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -378,8 +378,8 @@ class ASTBreakStatement : public ASTStatement
 public:
 	ASTBreakStatement();
 	~ASTBreakStatement();
-	void accept() {
-		
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -402,8 +402,8 @@ public:
 		return this->id;
 	}
 	~ASTVarLocation();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -423,8 +423,8 @@ public:
 		return this->index;
 	}
 	~ASTArrayLocation();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -447,8 +447,8 @@ public:
 		return this->value;
 	}
 	~ASTIntegerLiteralExpression();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -463,8 +463,8 @@ public:
 		return this->value;
 	}
 	~ASTCharLiteralExpression();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -476,8 +476,8 @@ public:
 		return true;
 	}
 	~ASTTrueLiteralExpression();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -489,8 +489,8 @@ public:
 		return false;
 	}
 	~ASTFalseLiteralExpression();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -515,8 +515,8 @@ public:
 		return this->op;
 	}
 	~ASTBinaryOperationExpression();
-	void accept() {
-
+	void accept(Visitor *v) {
+		v->visit(this);
 	}
 };
 
@@ -535,4 +535,7 @@ class ASTUnaryOperationExpression : public ASTExpression
 		return this->op;
 	}
 	~ASTUnaryOperationExpression();
+	void accept(Visitor *v) {
+		v->accept(this);
+	}
 };

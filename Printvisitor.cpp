@@ -14,7 +14,6 @@ public:
 			(*it)->accept(this);
 		}
 		std::cout<<"</field_declarations>"<<std::endl;
-
 	}
 	void visit(ASTFieldDecl*) {
 		std::cout<<"";

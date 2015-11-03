@@ -180,6 +180,15 @@ public:
 	virtual void accept() = 0;
 };
 
+
+class ASTExpression : public ASTNode
+{
+public:
+	ASTExpression();
+	~ASTExpression();
+	virtual void accept() = 0;
+};
+
 class ASTBlockStatement : public ASTStatement
 {
 	std::vector<ASTStatement *> stmtlist;
@@ -191,6 +200,91 @@ public:
 		return this->stmtlist;
 	}
 	~ASTBlockStatement();
+	void accept() {
+
+	}
+};
+
+class ASTAssignmentStatement : public ASTStatement
+{
+	AssignOp op;
+	ASTLocation * location;
+	ASTExpression * expr;
+public:
+	ASTAssignmentStatement(AssignOp op, ASTLocation *location, ASTExpression *expr) {
+		this->op = op;
+		this->location = location;
+		this->expr = expr;
+	}
+	AssignOp getOp() {
+		return this->op;
+	}
+	ASTLocation * getLocation() {
+		return this->location;
+	}
+	ASTExpression * getExpr() {
+		return this->expr;
+	}
+	~ASTAssignmentStatement();
+	void accept() {
+
+	}
+};
+
+class ASTMethodCall : public ASTStatement, public ASTExpression 
+{
+public:
+	ASTMethodCall();
+	~ASTMethodCall();
+	virtual void accept() = 0;
+};
+
+class ASTNormalMethod : public ASTMethodCall 
+{
+	std::string id;
+	std::vector<ASTExpression *> arguments;
+	ASTBlockStatement * block;
+public:
+	ASTNormalMethod(std::string id, std::vector<ASTExpression *> arguments, ASTBlockStatement * block) {
+		this->id = id;
+		this->arguments = arguments;
+		this->block = block;
+	}
+	std::string getId() {
+		return this->id;
+	}
+	std::vector<ASTExpression *> getArguments() {
+		return this->arguments;
+	}
+	ASTBlockStatement * getBlock() {
+		return this->block;
+	}
+	~ASTNormalMethod();
+	void accept() {
+
+	}
+};
+
+class ASTCalloutMethod : public ASTMethodCall 
+{
+	std::string id;
+	std::vector<ASTExpression *> arguments;
+	ASTBlockStatement * block;
+	ASTCalloutMethod(std::string id, std::vector<ASTExpression *> arguments, ASTBlockStatement * block) {
+		this->id = id;
+		this->arguments = arguments;
+		this->block = block;
+	}
+	std::string getId() {
+		return this->id;
+	}
+	std::vector<ASTExpression *> getArguments() {
+		return this->arguments;
+	}
+	ASTBlockStatement * getBlock() {
+		return this->block;
+	}
+	~ASTCalloutMethod();
 	void accept() {
 
 	}
@@ -237,7 +331,7 @@ public:
 	}
 	~ASTArrayLocation();
 	void accept() {
-		
+
 	}
 };
 

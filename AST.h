@@ -13,3 +13,4 @@ class ASTStatement;
 class ASTBlockStatement;
 class ASTLocation;
 class ASTExpression;
+class ASTAssignmentStatement;

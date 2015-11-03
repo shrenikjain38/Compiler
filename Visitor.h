@@ -23,6 +23,15 @@ public:
 	virtual void visit(ASTReturnStatement*) = 0;
 	virtual void visit(ASTVarLocation*) = 0;
 	virtual void visit(ASTArrayLocation*) = 0;
+	virtual void visit(ASTContinueStatement*) = 0;
+	virtual void visit(ASTBreakStatement*) = 0;
+	virtual void visit(ASTLiteralExpression*) = 0;
+	virtual void visit(ASTIntegerLiteralExpression*) = 0;
+	virtual void visit(ASTCharLiteralExpression*) = 0;
+	virtual void visit(ASTTrueLiteralExpression*) = 0;
+	virtual void visit(ASTFalseLiteralExpression*) = 0;
+	virtual void visit(ASTBinaryOperationExpression*) = 0;
+	virtual void visit(ASTUnaryOperationExpression*) = 0;
 };
 
 

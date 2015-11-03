@@ -290,6 +290,63 @@ class ASTCalloutMethod : public ASTMethodCall
 	}
 };
 
+class ASTIfStatement : public ASTStatement 
+{
+	ASTExpression * condition;
+	ASTBlockStatement * if_block;
+	ASTBlockStatement * else_block;
+public:
+	ASTIfStatement(ASTExpression * condition, ASTBlockStatement * if_block, ASTBlockStatement * else_block) {
+		this->condition = condition;
+		this->if_block = if_block;
+		this->else_block = else_block;
+	}
+	ASTExpression * getCondition() {
+		return this->condition;
+	}
+	ASTBlockStatement * getIf_block() {
+		return this->if_block;
+	}
+	ASTBlockStatement * getElse_block() {
+		return this->else_block;
+	}
+	~ASTIfStatement();
+	void accept() {
+
+	}
+};
+
+class ASTForStatement : public ASTStatement 
+{
+	ASTExpression * init_condition;
+	ASTExpression * end_condition;
+	ASTBlockStatement * block;
+public:
+	ASTForStatement(ASTExpression * init_condition, ASTExpression * end_condition, ASTBlockStatement * block) {
+		this->init_condition = init_condition;
+		this->end_condition = end_condition;
+		this->block = block;
+	}
+	ASTExpression * getInit_condition() {
+		return this->init_condition;
+	}
+	ASTExpression * getEnd_condition() {
+		return this->end_condition;
+	}
+	ASTBlockStatement * getBlock() {
+		return this->block;
+	}
+	~ASTForStatement();
+	void accept() {
+
+	}
+};
+
+class ASTReturnStatement : public ASTStatement
+{
+
+};
+
 class ASTLocation : public ASTNode
 {
 public:
